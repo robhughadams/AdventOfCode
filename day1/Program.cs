@@ -26,9 +26,39 @@ for (var i = 0; i < lines.Length - 2; i++)
         message = "decreased";
     }
 
-    var window = (char)((int)'A' + i);
+    var window = GetWindow(i);
     Console.WriteLine($"{window}: {depth} ({message})");
     lastDepth = depth;
 }
 
 Console.WriteLine($"There were {increases} increases");
+
+static string GetWindow(int i)
+{
+    var list = new LinkedList<int>();
+
+    const int @base = 26;
+
+    i++;
+
+    while (i > @base)
+    {
+        int value = i % @base;
+        if (value == 0)
+        {
+            i = i / @base - 1;
+            list.AddFirst(@base);
+        }
+        else
+        {
+            i /= @base;
+            list.AddFirst(value);
+        }
+    }
+
+    if (i > 0)
+    {
+        list.AddFirst(i);
+    }
+    return new string(list.Select(s => (char)('A' + s - 1)).ToArray());
+}
