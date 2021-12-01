@@ -3,14 +3,18 @@
 var increases = 0;
 
 int? lastDepth = null;
-foreach (var line in lines)
+for (var i = 0; i < lines.Length - 2; i++)
 {
-    var depth = int.Parse(line);
+    static int P(string line) => int.Parse(line);
+
+    var depth = P(lines[i])
+        + P(lines[i + 1])
+        + P(lines[i + 2]);
 
     string message;
     if (lastDepth == null)
     {
-        message = "N/A - no previous measurement";
+        message = "N/A - no previous sum";
     }
     else if (depth > lastDepth)
     {
@@ -22,7 +26,8 @@ foreach (var line in lines)
         message = "decreased";
     }
 
-    Console.WriteLine($"{line} ({message})");
+    var window = (char)((int)'A' + i);
+    Console.WriteLine($"{window}: {depth} ({message})");
     lastDepth = depth;
 }
 
