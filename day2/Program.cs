@@ -4,6 +4,7 @@ const string forward = "forward";
 const string down = "down";
 const string up = "up";
 
+var aim = 0;
 var depth = 0;
 var horizontalPosition = 0;
 
@@ -13,16 +14,17 @@ foreach (var line in lines)
     {
         var x = int.Parse(line[forward.Length..]);
         horizontalPosition += x;
+        depth += aim * x;
     }
     else if (line.StartsWith(down))
     {
         var x = int.Parse(line[down.Length..]);
-        depth += x;
+        aim += x;
     }
     else if (line.StartsWith(up))
     {
         var x = int.Parse(line[up.Length..]);
-        depth -= x;
+        aim -= x;
     }
 }
 
