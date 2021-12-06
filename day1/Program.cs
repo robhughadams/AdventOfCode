@@ -1,64 +1,76 @@
-﻿var lines = File.ReadAllLines("input");
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Collections.Generic;
 
-var increases = 0;
-
-int? lastDepth = null;
-for (var i = 0; i < lines.Length - 2; i++)
+public class HelloWorld
 {
-    static int P(string line) => int.Parse(line);
-
-    var depth = P(lines[i])
-        + P(lines[i + 1])
-        + P(lines[i + 2]);
-
-    string message;
-    if (lastDepth == null)
+    public static void Main(string[] args)
     {
-        message = "N/A - no previous sum";
-    }
-    else if (depth > lastDepth)
-    {
-        message = "increased";
-        increases++;
-    }
-    else
-    {
-        message = "decreased";
-    }
+		var lines = File.ReadAllLines("input");
 
-    var window = GetWindow(i);
-    Console.WriteLine($"{window}: {depth} ({message})");
-    lastDepth = depth;
-}
+		var increases = 0;
 
-Console.WriteLine($"There were {increases} increases");
+		int? lastDepth = null;
+		for (var i = 0; i < lines.Length - 2; i++)
+		{
+			static int P(string line) => int.Parse(line);
 
-static string GetWindow(int i)
-{
-    var list = new LinkedList<int>();
+			var depth = P(lines[i])
+				+ P(lines[i + 1])
+				+ P(lines[i + 2]);
 
-    const int @base = 26;
+			string message;
+			if (lastDepth == null)
+			{
+				message = "N/A - no previous sum";
+			}
+			else if (depth > lastDepth)
+			{
+				message = "increased";
+				increases++;
+			}
+			else
+			{
+				message = "decreased";
+			}
 
-    i++;
+			var window = GetWindow(i);
+			Console.WriteLine($"{window}: {depth} ({message})");
+			lastDepth = depth;
+		}
 
-    while (i > @base)
-    {
-        int value = i % @base;
-        if (value == 0)
-        {
-            i = i / @base - 1;
-            list.AddFirst(@base);
-        }
-        else
-        {
-            i /= @base;
-            list.AddFirst(value);
-        }
+		Console.WriteLine($"There were {increases} increases");
+
     }
 
-    if (i > 0)
-    {
-        list.AddFirst(i);
-    }
-    return new string(list.Select(s => (char)('A' + s - 1)).ToArray());
+	private static string GetWindow(int i)
+	{
+		var list = new LinkedList<int>();
+
+		const int @base = 26;
+
+		i++;
+
+		while (i > @base)
+		{
+		int value = i % @base;
+		if (value == 0)
+		{
+			i = i / @base - 1;
+			list.AddFirst(@base);
+		}
+		else
+		{
+			i /= @base;
+			list.AddFirst(value);
+		}
+		}
+
+		if (i > 0)
+		{
+		list.AddFirst(i);
+		}
+		return new string(list.Select(s => (char)('A' + s - 1)).ToArray());
+	}
 }
