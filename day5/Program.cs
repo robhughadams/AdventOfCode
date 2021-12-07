@@ -50,7 +50,7 @@ class Line
 
 class Grid
 {
-    private const int Size = 10000;
+    private const int Size = 1000;
 
     readonly int[][] _grid;
 
@@ -64,26 +64,19 @@ class Grid
 
     public void Add(Line line)
     {
-        static (int start, int end) FindStartAndEnd(int a, int b) => a < b ? (a, b) : (b, a);
+        static Func<int, int> GetAdvanceFunction(int a, int b) => a < b ? (i => ++i) : b < a ? (i => --i) : (i => i);
 
-        if (line.Horizontal)
+        var advanceX = GetAdvanceFunction(line.X1, line.X2);
+        var advanceY = GetAdvanceFunction(line.Y1, line.Y2);
+
+        var x = line.X1;
+        var y = line.Y1;
+        SetPoint(x, y);
+        while (x != line.X2 || y != line.Y2)
         {
-            (var start, var end) = FindStartAndEnd(line.X1, line.X2);
-
-            for (var i = start; i <= end; i++)
-            {
-                SetPoint(i, line.Y1);
-            }
-        }
-
-        if (line.Vertical)
-        {
-            (var start, var end) = FindStartAndEnd(line.Y1, line.Y2);
-
-            for (var i = start; i <= end; i++)
-            {
-                SetPoint(line.X1, i);
-            }
+            x = advanceX(x);
+            y = advanceY(y);
+            SetPoint(x, y);
         }
     }
 
