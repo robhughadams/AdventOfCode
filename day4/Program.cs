@@ -18,13 +18,13 @@ foreach (var number in numbersDrawn)
 {
     Console.WriteLine("Checking: " + number);
 
-    foreach (var board in boards)
+    foreach (var board in boards.Where(b => b.Score == 0))
     {
         board.Mark(number);
 
         if (board.Bingo())
         {
-            board.SetScore(number)
+            board.CalculateScore(number);
             board.Position = position;
             position++;
         }
@@ -33,10 +33,14 @@ foreach (var number in numbersDrawn)
 
 var lastBoard = boards.OrderBy(b => b.Position).Last();
 
-Console.WriteLine("Board score: " + board.Score(number));
+Console.WriteLine(lastBoard);
+Console.WriteLine("Board score: " + lastBoard.Score);
 
 class Board
 {
+    public int Position { get; set; }
+    public int Score { get; private set; }
+
     readonly BoardValue[][] _values = new BoardValue[5][];
 
     public Board(string[] lines)
@@ -96,9 +100,9 @@ class Board
         return false;
     }
 
-    public int Score(int lastNumber)
+    public void CalculateScore(int lastNumber)
     {
-        return _values.Sum(row => row
+        Score = _values.Sum(row => row
             .Where(v => !v.Matched)
             .Sum(x => x.Value)) * lastNumber;
     }
