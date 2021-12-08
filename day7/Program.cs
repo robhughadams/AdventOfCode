@@ -12,7 +12,11 @@ for (var i = 0; i <= maxPosition; i++)
     var cost = 0;
     foreach (var position in positions)
     {
-        cost += Math.Abs(position - i);
+        var numberOfSteps = Math.Abs(position - i);
+        for (var step = 1; step <= numberOfSteps; step++)
+        {
+            cost += step;
+        }
     }
 
     Console.WriteLine($"Cost for position {i} is {cost}");
