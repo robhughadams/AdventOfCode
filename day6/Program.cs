@@ -1,59 +1,68 @@
-﻿using System.Collections;
-
-var lines = File.ReadAllLines("input");
+﻿var lines = File.ReadAllLines("input");
 
 var shoal = new Shoal();
-foreach(var fish in lines[0].Split(',')
-    .Select(x => new LanternFish(int.Parse(x), shoal)))
+foreach(var timerValue in lines[0].Split(',')
+    .Select(x => int.Parse(x)))
 {
-    shoal.Add(fish);
+    shoal.Add(timerValue);
 }
 
-// Console.WriteLine($"Initial state: {string.Join(',', shoal)}");
+// Console.WriteLine(shoal);
 
-const int daysToRun = 80;
+const int daysToRun = 256;
 
-for (var i = 1; i <= daysToRun; i++)
+for (var day = 1; day <= daysToRun; day++)
 {
-    foreach (var fish in shoal.ToArray()) // Create a copy of the shoal
-    {
-        fish.IncrementTimer();
-    }
+    shoal.IncrementTimers();
 
-    // Console.WriteLine($"After {i:00} day{(i > 1 ? "s" : " ")}: {string.Join(',', shoal)}");
+    Console.WriteLine($"After {day:000} days there are {shoal.Count()} fish");
+    // Console.WriteLine(shoal);
 }
 
-Console.WriteLine("Number of fish: " + shoal.Count);
+Console.WriteLine("Number of fish: " + shoal.Count());
 
-class LanternFish
+class Shoal
 {
-    private readonly Shoal _shoal;
+    private readonly Dictionary<int, long> _timers = new();
 
-    private int _timerValue;
-
-    public LanternFish(int timerValue, Shoal shoal)
+    public Shoal()
     {
-        _timerValue = timerValue;
-        _shoal = shoal;
-    }
-
-    public void IncrementTimer()
-    {
-        _timerValue--;
-
-        if (_timerValue == -1)
+        for (var i = 0; i <= 8; i++)
         {
-            _timerValue = 6;
-            _shoal.Add(new LanternFish(8, _shoal));
+            _timers.Add(i, 0);
         }
+    }
+
+    public void Add(int timerValue)
+    {
+        _timers[timerValue]++;
+    }
+
+    public void IncrementTimers()
+    {
+        var reproductiveFish = _timers[0];
+
+        for (var i = 0; i < 8; i++)
+        {
+            _timers[i] = _timers[i + 1];
+        }
+
+        _timers[6] += reproductiveFish; // Reset the parents
+        _timers[8] = reproductiveFish; // Add the offspring
+    }
+
+    public long Count()
+    {
+        var count = 0L;
+        for (var i = 0; i <= 8; i++)
+        {
+            count += _timers[i];
+        }
+        return count;
     }
 
     public override string ToString()
     {
-        return _timerValue.ToString();
+        return string.Join(',', _timers);
     }
-}
-
-class Shoal : List<LanternFish>
-{
 }
