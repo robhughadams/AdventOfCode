@@ -31,10 +31,15 @@ void FindPath(string node, List<string> path)
 	if (node == "end")
 		return;
 
-	var linkedNodes = nodes[node].Where(n => !(FirstCharIsLower(n) && path.Contains(n)));
+	var linkedNodes = nodes[node].Where(n => n != "start");
 
 	foreach (var linkedNode in linkedNodes)
 	{
+		if (FirstCharIsLower(linkedNode)
+			&& path.Contains(linkedNode)
+			&& path.Where(x => FirstCharIsLower(x)).GroupBy(x => x).Any(g => g.Count() == 2))
+			continue;
+
 		FindPath(linkedNode, path.ToList());
 	}
 }
