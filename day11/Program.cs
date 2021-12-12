@@ -17,7 +17,7 @@ for (var y = 0; y < grid.Length; y++)
 Console.WriteLine();
 
 var flashes = 0;
-const int numberOfSteps = 100;
+const int numberOfSteps = int.MaxValue;
 for (var step = 0; step < numberOfSteps; step++)
 {
 	for (var y = 0; y < grid.Length; y++)
@@ -48,6 +48,7 @@ for (var step = 0; step < numberOfSteps; step++)
 		}
 	} while (flashed);
 
+	var allFlashed = true;
 	for (var y = 0; y < grid.Length; y++)
 	{
 		for (var x = 0; x < grid[y].Length; x++)
@@ -56,11 +57,21 @@ for (var step = 0; step < numberOfSteps; step++)
 			{
 				grid[y][x] = 0;
 			}
+			else
+			{
+				allFlashed = false;
+			}
 
 			Console.Write(grid[y][x]);
 		}
 
 		Console.WriteLine();
+	}
+	
+	if (allFlashed)
+	{
+		Console.WriteLine("All octupusus have flashed! Step: " + (step + 1));
+		break;
 	}
 
 	Console.WriteLine();
