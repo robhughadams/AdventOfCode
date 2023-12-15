@@ -1,22 +1,29 @@
 open System.IO
 
-let firstNumber line =
-  line
-  |> Seq.tryFind (fun c -> c >= '0' && c <= '9')
-  |> (function
-      | Some x -> x
-      | None -> '0')
+let digits = [| "1"; "2"; "3"; "4"; "5"; "6"; "7"; "8"; "9" |]
+let numbers = [| "one"; "two"; "three"; "four"; "five"; "six"; "seven"; "eight"; "nine" |]
+let both = Array.concat [| digits; numbers |]
 
-let lastNumber line =
-  line
-  |> Seq.rev
-  |> firstNumber
+// printfn "%A" both
+
+let firstNumber indexOf by =
+  both
+  |> Array.mapi (fun i x -> (indexOf(x), i + 1))
+  |> Array.filter (fun x -> fst x > -1)
+  |> by fst
+  |> snd 
+  |> (fun x -> if x > 9 then (x - 9) else x)
+  |> string
 
 "input"
+// "example"
+// "problem"
 |> File.ReadAllLines
 |> Seq.map (fun line ->
-            string (firstNumber line) + string (lastNumber line)
-            |> int)
+            (firstNumber line.IndexOf Array.minBy) + (firstNumber line.LastIndexOf Array.maxBy)
+            |> int
+           )
+// |> Seq.iter (fun x -> printfn "%A" x)
 |> Seq.sum
-|> printfn "%d"
+|> printfn "%A" 
 
